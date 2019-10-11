@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>IconScout 2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+	 
+</head>
+<body>
+
+	<div class="w3-row w3-border">
+	  <div class="w3-container w3-half">
+	  	
+	  	<div class="w3-container">
+			<div class="w3-container">
+			  <h3>Insert Cache Items</h3>
+			</div>
+
+
+			<form class="w3-container" id="addForm" onsubmit="event.preventDefault(); addItem();">
+			  	<p>
+			  		<label>Key</label>
+			  		<input name="key" class="w3-input" type="text">
+				</p>
+			  	<p>
+			  		<label>Value</label>
+			  		<input name="value" class="w3-input" type="text">
+			  	</p>
+			  	<p>
+			  		<button type="submit" class="w3-btn w3-blue w3-round">Add</button>
+			  	</p>
+			</form>
+
+
+		</div>
+
+		<div class="w3-container">
+
+			<div class="w3-container">
+			  <h3>Search Cache Items</h3>
+			</div>
+		  	
+			<form class="w3-container" id="searchForm" onsubmit="event.preventDefault(); searchItem();">
+			  	<p>
+			  		<label>Key</label>
+			  		<input name="key" class="w3-input" type="text">
+				</p>
+			  	<p>
+			  		<button type="submit" class="w3-btn w3-yellow w3-round">Search</button>
+			  	</p>
+			</form>
+
+			<div class="w3-container w3-round w3-light-gray w3-padding w3-margin">
+				<p id="searchResult">
+					Result
+				</p>
+			</div>
+
+		</div>
+
+	  </div>
+	  <div class="w3-container w3-half">
+
+	  		<div class="w3-container w3-center w3-margin">
+				<button onclick="reset()" class="w3-btn w3-white w3-border w3-round-large">Reset</button>
+			</div>
+		
+			<ul class="w3-ul w3-card-2 w3-round" style="width:50%; margin: 16px auto!important;" id="myUl">
+				
+			</ul>
+
+
+	  	
+	  </div>
+	</div>
+
+
+<script type="text/javascript" src="script.js"></script>
+
+<script>
+	function addItem() {
+
+		let myForm = document.getElementById("addForm") 
+        let myKey = String(myForm.key.value)
+        let myValue = String(myForm.value.value)
+
+        if (!(myKey && myValue)){
+	        alert('Insert Key and Value Both')
+	        return false
+        } 
+
+        if (!MyCache.setItem(myKey, myValue)) {
+        	alert(myKey+" is already exist")
+        } else {
+        	refreshList.call();
+        }
+        myForm.reset()
+    }
+
+    function searchItem() {
+    	let myForm = document.getElementById("searchForm") 
+        let myKey = myForm.key.value
+        let result = ''
+
+        if (!(myKey)){
+	        alert('Insert Key')
+	        return false
+        }
+
+        if(result = MyCache.getItem(myKey)) {
+        	document.getElementById('searchResult').innerHTML = myKey+": "+result
+	        refreshList.call();
+
+        } else {        	
+        	document.getElementById('searchResult').innerHTML = 'No item found!'
+        }
+        myForm.reset() 
+
+    }
+
+    function refreshList() {
+	  	
+	  	//remove old <li>	
+	  	let el = document.getElementById("myUl");         
+        let child = el.lastElementChild;
+
+        while (child) { 
+            el.removeChild(child); 
+            child = el.lastElementChild; 
+        }	
+
+        //render new <li>
+    	let records = MyCache.getList();
+    	records.forEach(function(item) {
+
+	  		let li = document.createElement("li");
+	  		let text = document.createTextNode(item);
+	  		
+	  		li.appendChild(text);
+	  		document.getElementById("myUl").appendChild(li);
+		});
+    }
+    
+    function reset() {
+    	MyCache.reset()
+    	refreshList.call()
+    }
+
+
+</script>
+
+</body>
+</html>
